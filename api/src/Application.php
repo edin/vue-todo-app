@@ -4,7 +4,6 @@ namespace App;
 
 use App\Controllers\TodoController;
 use App\Foundation\DatabaseConnection;
-use App\Foundation\EntityResponse;
 use App\Foundation\Response;
 use App\Foundation\Route;
 use App\Foundation\Router;
@@ -41,11 +40,9 @@ final class Application
                 $response = $response->toResponse();
             }
 
-            if ($response instanceof Response) 
-            {
+            if ($response instanceof Response) {
                 $response->send();
             }
-
         } else {
             Response::json(["error" => "Invalid route"])
                 ->withStatusCode(404)
