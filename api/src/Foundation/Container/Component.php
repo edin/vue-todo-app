@@ -16,13 +16,13 @@ final class Component implements IComponentRegistration
         $this->target = $target ?? $type;
     }
 
-    public function asShared(): IComponentRegistration
+    public function shared(): IComponentRegistration
     {
         $this->isShared = true;
         return $this;
     }
 
-    public function withArguments(array $arguments): IComponentRegistration
+    public function arguments(array $arguments): IComponentRegistration
     {
         $this->arguments = $arguments;
         return $this;

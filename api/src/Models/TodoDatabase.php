@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Foundation\DatabaseConnection;
 
-final class TodoDatabase 
+final class TodoDatabase
 {
     private DatabaseConnection $db;
 
@@ -13,7 +13,8 @@ final class TodoDatabase
         $this->db = $db;
     }
 
-    public function save(TodoItem $item): TodoItem {
+    public function save(TodoItem $item): TodoItem
+    {
         if ($item->id) {
             return $this->update($item);
         } else {
@@ -21,7 +22,8 @@ final class TodoDatabase
         }
     }
 
-    public function update(TodoItem $item): TodoItem {
+    public function update(TodoItem $item): TodoItem
+    {
         $this->db->execute(
             "UPDATE todos SET title = :title, completed = :completed WHERE id = :id",
             [
@@ -33,7 +35,8 @@ final class TodoDatabase
         return $item;
     }
 
-    public function insert(TodoItem $item): TodoItem {
+    public function insert(TodoItem $item): TodoItem
+    {
         $this->db->execute(
             "INSERT INTO todos(title, completed) VALUES(:title, :completed)",
             [
@@ -45,7 +48,8 @@ final class TodoDatabase
         return $item;
     }
 
-    public function removeById(int $id): ?TodoItem {
+    public function removeById(int $id): ?TodoItem
+    {
         $item = $this->findById($id);
         if ($item) {
             $this->db->execute("DELETE FROM todos WHERE ID = :id", ["id" => $item->id]);
@@ -53,7 +57,8 @@ final class TodoDatabase
         return $item;
     }
 
-    public function findById(int $id): ?TodoItem {
+    public function findById(int $id): ?TodoItem
+    {
         $items = $this->db->queryAll("SELECT * FROM todos WHERE ID = :id", ["id" => $id]);
         if (count($items) > 0) {
             return TodoItem::fromArray($items[0]);
@@ -61,12 +66,12 @@ final class TodoDatabase
         return null;
     }
 
-    public function findAll(): array {
+    public function findAll(): array
+    {
         $models = [];
         $items = $this->db->queryAll("SELECT * FROM todos ORDER BY id ASC");
-        
-        foreach($items as $item) 
-        {
+
+        foreach ($items as $item) {
             $models[] = TodoItem::fromArray($item);
         }
 

@@ -3,6 +3,7 @@
 namespace App\Foundation;
 
 use App\Foundation\Container\IContainer;
+use App\Foundation\Container\ResolutionScope;
 
 final class Dispatcher implements IDispatcher
 {
@@ -25,19 +26,42 @@ final class Dispatcher implements IDispatcher
 
         if ($route === null)
         {
-            return Response::json(["error" => "Invalid route"])->status(404);
+            return Response::json(["error" => "Route not found"])->status(404);
         }
 
         try
         {
             [$typeName, $method] = $route->handler;
 
-            $instance = $this->container->get($typeName);
+            $scope = new ResolutionScope($this->container);
 
-            $result = call_user_func_array(
-                [$instance, $method],
-                $route->params
-            );
+            $instance = $scope->get($typeName);
+
+            $reflection = new \ReflectionClass($instance);
+            $method = $reflection->getMethod($method);
+            $arguments = [];
+
+            foreach($method->getParameters() as $param)
+            {
+                $name = $param->getName();
+                $type = $param->getType();
+
+                $defaultValue = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
+                $arguments[$name] = $route->params[$name] ?? $defaultValue;
+
+                if ($type instanceof \ReflectionNamedType)
+                {
+                    $attribute = $param->getAttributes(FromBody::class)[0] ?? null;
+                    if ($attribute) {
+                        $arguments[$name] = $attribute->newInstance()->resolve($scope, $type->getName());
+                    }
+                    else {
+                        $arguments[$name] = $scope->get($type->getName());
+                    }
+                }
+            }
+
+            $result = $method->invokeArgs($instance, $arguments);
 
             if ($result instanceof Responsable) {
                 $result = $result->toResponse();

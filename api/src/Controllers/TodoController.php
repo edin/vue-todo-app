@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Foundation\CollectionResponse;
 use App\Foundation\EntityResponse;
+use App\Foundation\FromBody;
 use App\Foundation\Route;
 use App\Models\TodoDatabase;
 use App\Models\TodoItem;
@@ -18,25 +19,36 @@ final class TodoController
     }
 
     #[Route("todos")]
-    public function findAll() {
+    public function findAll()
+    {
         return new CollectionResponse($this->todos->findAll());
     }
 
+    #[Route("todos/{id:\d+}")]
+    public function findById(int $id)
+    {
+        $model = $this->todos->findById($id);
+        return EntityResponse::create($model);
+    }
+
     #[Route("todos", "POST")]
-    public function create(#[FromBody] TodoItem $model) {
+    public function create(#[FromBody] TodoItem $model)
+    {
         $model = $this->todos->save($model);
         return EntityResponse::create($model);
     }
 
     #[Route("todos/{id:\d+}", "PUT")]
-    public function update(?int $id, #[FromBody] TodoItem $model) {
+    public function update(?int $id, #[FromBody] TodoItem $model)
+    {
         $model->id = (int)$id;
         $model = $this->todos->save($model);
         return EntityResponse::update($model);
     }
 
     #[Route("todos/{id:\d+}", "DELETE")]
-    public function remove(?int $id) {
+    public function remove(?int $id)
+    {
         $model = $this->todos->removeById($id);
         return EntityResponse::delete($model);
     }

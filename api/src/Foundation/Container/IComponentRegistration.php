@@ -4,6 +4,6 @@ namespace App\Foundation\Container;
 
 interface IComponentRegistration
 {
-    public function asShared(): IComponentRegistration;
-    public function withArguments(array $arguments): IComponentRegistration;
+    public function shared(): IComponentRegistration;
+    public function arguments(array $arguments): IComponentRegistration;
 }

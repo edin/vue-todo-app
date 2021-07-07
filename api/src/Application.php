@@ -2,15 +2,14 @@
 
 namespace App;
 
-use App\Controllers\TodoController;
-use App\Foundation\Container\Container;
-use App\Foundation\Container\IContainer;
-use App\Foundation\DatabaseConnection;
+use App\Foundation\Router;
+use App\Foundation\Response;
 use App\Foundation\Dispatcher;
 use App\Foundation\IDispatcher;
-use App\Foundation\Response;
-use App\Foundation\Router;
-
+use App\Controllers\TodoController;
+use App\Foundation\DatabaseConnection;
+use App\Foundation\Container\Container;
+use App\Foundation\Container\IContainer;
 
 final class Application
 {
@@ -20,10 +19,18 @@ final class Application
         $router->addController(TodoController::class);
 
         $di = new Container();
-        $di->add(IContainer::class, $di);
+
         $di->add(Router::class, $router);
-        $di->add(DatabaseConnection::class)->asShared();
-        $di->add(IDispatcher::class, Dispatcher::class)->asShared();
+        $di->add(IContainer::class, $di);
+        $di->add(IDispatcher::class, Dispatcher::class)->shared();
+
+        $di->add(DatabaseConnection::class, shared: true, arguments: [
+            'driver'   => 'mysql',
+            'host'     => 'localhost',
+            'database' => 'todo',
+            'user'     => 'root',
+            'password' => 'root'
+        ]);
 
         $di->get(IDispatcher::class)->dispatch()->send();
     }

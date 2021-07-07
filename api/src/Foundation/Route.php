@@ -86,7 +86,8 @@ final class Route
         }
 
         $matches = [];
-        if (preg_match_all("#^{$pattern}|/{$pattern}$#i", $path, $matches)) {
+        if (preg_match_all("#^{$pattern}$#i", $path, $matches) ||
+            preg_match_all("#^/{$pattern}$#i", $path, $matches)) {
             $params = [];
             foreach ($tags as $tag) {
                 $params[$tag->name] = $matches[$tag->name][0] ?? null;

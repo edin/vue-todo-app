@@ -2,16 +2,15 @@
 
 namespace App\Foundation\Container;
 
-use SplObjectStorage;
-
 final class Container implements IContainer
 {
     /** @var Component[] */
     private $components = [];
 
-    public function add(string $type, $target = null)
+    public function add(string $type, $target = null, bool $shared = false, array $arguments = [])
     {
-        return $this->components[$type] = new Component($type, $target);
+        $component = new Component($type, $target);
+        return $this->components[$type] = $component->arguments($arguments);
     }
 
     public function get(string $name)
@@ -33,11 +32,9 @@ final class Container implements IContainer
                 $resolvedArguments = $this->resolveArguments($reflection, $container);
                 $args = $component->arguments + $resolvedArguments;
                 $instance = $reflection->newInstanceArgs($args);
-            }
-            elseif ($component->target instanceof \Closure) {
+            } elseif ($component->target instanceof \Closure) {
                 $instance = ($component->target)();
-            }
-            else {
+            } else {
                 $instance = $component->target;
             }
 
