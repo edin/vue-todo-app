@@ -4,25 +4,23 @@ namespace App\Foundation;
 
 use PDO;
 
-final class DatabaseConnection 
+final class DatabaseConnection
 {
     private ?PDO $db = null;
 
-    public function __construct()
-    {
-    }
+    public function __construct() { }
 
-    private function getDb(): PDO 
+    private function getDb(): PDO
     {
         if ($this->db == null) {
             $this->db = new PDO('mysql:host=localhost;dbname=todo', "root", "root", [
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-            ]); 
+            ]);
         }
         return $this->db;
     }
 
-    public function execute(string $query, array $params = []) 
+    public function execute(string $query, array $params = [])
     {
         $command = $this->getDb()->prepare($query);
         foreach($params as $key => $value) {
@@ -35,7 +33,7 @@ final class DatabaseConnection
         return $this->getDb()->lastInsertId();
     }
 
-    public function queryAll(string $query, array $params = []) 
+    public function queryAll(string $query, array $params = [])
     {
         $command = $this->getDb()->prepare($query);
         foreach($params as $key => $value) {

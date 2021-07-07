@@ -31,7 +31,7 @@ final class EntityResponse implements Responsable
     public function toResponse(): Response
     {
         if ($this->entity) {
-            return Response::json(json_encode($this->entity), 200);
+            return Response::json(json_encode($this->entity), $this->status);
         } else {
             return Response::json(["error" => "Entity not found"], 404);
         }

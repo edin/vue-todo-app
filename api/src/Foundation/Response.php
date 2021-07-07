@@ -18,12 +18,12 @@ final class Response
         $this->headers[$key] = [$value];
     }
 
-    public function withStatusCode(int $code): Response {
+    public function status(int $code): Response {
         $this->statusCode = $code;
         return $this;
     }
 
-    public function withBody($body) {
+    public function body($body) {
         $this->body = $body;
         return $this;
     }
@@ -31,10 +31,10 @@ final class Response
     public static function json($data, $status = 200) {
         $response = new static();
         $response->addHeader("content-type", "application/json");
-        return $response->withBody($data)->withStatusCode($status);
+        return $response->body($data)->status($status);
     }
 
-    public function send() 
+    public function send()
     {
         http_response_code($this->statusCode);
         foreach($this->headers as $key => $values) {

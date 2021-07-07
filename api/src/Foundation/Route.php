@@ -2,6 +2,9 @@
 
 namespace App\Foundation;
 
+use Attribute;
+
+#[Attribute(Attribute::TARGET_METHOD)]
 final class Route
 {
     public array $methods = [];
@@ -9,36 +12,40 @@ final class Route
     public $handler;
     public $params = [];
 
-    public function __construct($methods, $pattern, $handler)
+    public function __construct($pattern, $methods = "GET", $handler = null)
     {
         $this->methods = (array)$methods;
         $this->pattern = $pattern;
         $this->handler = $handler;
     }
 
+    public function setHandler($handler): void {
+        $this->handler = $handler;
+    }
+
     public static function get(string $pattern, $handler): Route
     {
-        return new Route("GET", $pattern, $handler);
+        return new Route($pattern, "GET", $handler);
     }
 
     public static function post(string $pattern, $handler): Route
     {
-        return new Route("POST", $pattern, $handler);
+        return new Route($pattern, "POST", $handler);
     }
 
     public static function put(string $pattern, $handler): Route
     {
-        return new Route("PUT", $pattern, $handler);
+        return new Route($pattern, "PUT", $handler);
     }
 
     public static function patch(string $pattern, $handler): Route
     {
-        return new Route("PATCH", $pattern, $handler);
+        return new Route($pattern, "PATCH", $handler);
     }
 
     public static function delete(string $pattern, $handler): Route
     {
-        return new Route("DELETE", $pattern, $handler);
+        return new Route($pattern, "DELETE", $handler);
     }
 
     public function patternLength(): int

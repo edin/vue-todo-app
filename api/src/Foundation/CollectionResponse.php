@@ -13,9 +13,6 @@ final class CollectionResponse implements Responsable
 
     public function toResponse(): Response
     {
-        $data = [
-            "data" => $this->collection
-        ];
-        return Response::json($data, 200);
+        return Response::json(["data" => $this->collection], 200);
     }
 }
