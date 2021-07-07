@@ -7,10 +7,9 @@ final class Container implements IContainer
     /** @var Component[] */
     private $components = [];
 
-    public function add(string $type, $target = null, bool $shared = false, array $arguments = [])
+    public function add(string $type, $target = null, bool $shared = false, array $arguments = []): IComponentRegistration
     {
-        $component = new Component($type, $target);
-        return $this->components[$type] = $component->arguments($arguments);
+        return $this->components[$type] = new Component($type, $target, $shared, $arguments);
     }
 
     public function get(string $name)

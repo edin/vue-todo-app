@@ -10,10 +10,12 @@ final class Component implements IComponentRegistration
     public $instance = null;
     public $arguments = [];
 
-    public function __construct(string $type, $target = null)
+    public function __construct(string $type, $target = null, bool $shared = false, array $arguments = [])
     {
         $this->type = $type;
         $this->target = $target ?? $type;
+        $this->isShared = $shared;
+        $this->arguments = $arguments;
     }
 
     public function shared(): IComponentRegistration
